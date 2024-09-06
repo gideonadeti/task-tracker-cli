@@ -1,3 +1,9 @@
 #!/usr/bin/env node
 
-console.log(process.argv)
+interface Task {
+  id: number;
+  description: string;
+  status: "to-do" | "in-progress" | "done";
+  createdAt: string;
+  updatedAt: string;
+}
