@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import * as path from "path";
+
 interface Task {
   id: number;
   description: string;
@@ -7,3 +9,5 @@ interface Task {
   createdAt: string;
   updatedAt: string;
 }
+
+const filePath = path.join(__dirname, "tasks.json");
