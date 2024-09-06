@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Task Tracker CLI (TTC) is a command-line tool to help users track and manage their tasks.",
   "main": "dist/index.js",
+  "bin": {
+    "ttc": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js"
