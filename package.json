@@ -1,0 +1,17 @@
+{
+  "name": "task-tracker-cli",
+  "version": "1.0.0",
+  "description": "Task Tracker CLI (TTC) is a command-line tool to help users track and manage their tasks. It supports adding, updating, deleting tasks, and monitoring their status. You can list tasks based on their completion stage, including pending, in-progress, and completed tasks.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "Gideon Adeti",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "typescript": "^5.5.4"
+  }
+}
