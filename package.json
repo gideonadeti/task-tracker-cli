@@ -1,7 +1,7 @@
 {
   "name": "task-tracker-cli",
   "version": "1.0.0",
-  "description": "Task Tracker CLI (TTC) is a command-line tool to help users track and manage their tasks.",
+  "description": "Task Tracker CLI (TTC) is a command-line tool for tracking and managing tasks.",
   "main": "dist/index.js",
   "bin": {
     "ttc": "dist/index.js"
