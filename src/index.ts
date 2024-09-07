@@ -37,6 +37,26 @@ function getNextTaskId(tasks: Task[]): number {
   return tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 1;
 }
 
+// Helper to format time in a more user friendly way
+function formatTime(dateString: string): string {
+  const date = new Date(dateString);
+
+  // Format the date and time for better readability
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return `${formattedDate} at ${formattedTime}`;
+}
+
 // Helper to log messages to the console
 function consoleLog(
   message: string,
@@ -114,6 +134,29 @@ function markTask(id: number, status: "in-progress" | "done") {
   } else {
     consoleLog(`Task with ID ${id} not found.`, "failure");
   }
+}
+
+function listTasks(status?: "in-progress" | "done") {
+  const tasks = loadTasks();
+  const filteredTasks = status
+    ? tasks.filter((t) => t.status === status)
+    : tasks;
+
+  if (filteredTasks.length === 0) {
+    consoleLog("No tasks found.", "success");
+    return;
+  }
+
+  filteredTasks.forEach((task) => {
+    consoleLog(
+      `ID: ${task.id}
+      Description: ${task.description}
+      Status: ${task.status}
+      Created: ${formatTime(task.createdAt)}
+      Updated: ${formatTime(task.updatedAt)}`,
+      "success"
+    );
+  });
 }
 
 // Main CLI handler
@@ -203,6 +246,23 @@ switch (command) {
         "failure",
         "ttc mark-done 1"
       );
+    }
+    break;
+
+  case "list":
+    if (args.length > 0) {
+      const status = args[0];
+      if (["in-progress", "done"].includes(status)) {
+        listTasks(status as "in-progress" | "done");
+      } else {
+        consoleLog(
+          `Invalid status. Please provide one of the following: in-progress, or done.`,
+          "failure",
+          "ttc list done"
+        );
+      }
+    } else {
+      listTasks();
     }
     break;
 
