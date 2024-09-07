@@ -125,6 +125,14 @@ ttc <command> [options]
 
 The task data is stored in a `tasks.json` file located in the `dist` directory after the build step. You can view and manually edit tasks by modifying this file directly (not recommended unless you're familiar with JSON structures).
 
+## Uninstallation
+
+If you made the script globally executable, you can uninstall the package by running:
+
+```bash
+npm uninstall -g task-tracker-cli
+```
+
 ## Contributing
 
 Feel free to fork this repository, make improvements, and submit a pull request.
