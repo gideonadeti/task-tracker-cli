@@ -208,7 +208,7 @@ switch (command) {
           } else {
             console.log("Task deletion cancelled.");
           }
-          process.stdin.end();
+          process.stdin.pause(); // Stop waiting for input after confirmation
         });
       } else {
         consoleLog(
