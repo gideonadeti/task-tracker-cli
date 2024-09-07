@@ -103,6 +103,19 @@ function deleteTask(id: number): void {
   }
 }
 
+function markTask(id: number, status: "in-progress" | "done") {
+  const tasks = loadTasks();
+  const task = tasks.find((t) => t.id === id);
+  if (task) {
+    task.status = status;
+    task.updatedAt = new Date().toISOString();
+    saveTasks(tasks);
+    consoleLog(`Task with ID ${id} marked as ${status}.`, "success");
+  } else {
+    consoleLog(`Task with ID ${id} not found.`, "failure");
+  }
+}
+
 // Main CLI handler
 const [, , command, ...args] = process.argv;
 
@@ -167,9 +180,35 @@ switch (command) {
     }
     break;
 
+  case "mark-in-progress":
+    const inProgressId = parseInt(args[0], 10);
+    if (!isNaN(inProgressId)) {
+      markTask(inProgressId, "in-progress");
+    } else {
+      consoleLog(
+        "Please provide a valid task ID.",
+        "failure",
+        "ttc mark-in-progress 1"
+      );
+    }
+    break;
+
+  case "mark-done":
+    const doneId = parseInt(args[0], 10);
+    if (!isNaN(doneId)) {
+      markTask(doneId, "done");
+    } else {
+      consoleLog(
+        "Please provide a valid task ID.",
+        "failure",
+        "ttc mark-done 1"
+      );
+    }
+    break;
+
   default:
     consoleLog(
-      "Unknown command. Available commands: add, update, delete",
+      "Unknown command. Available commands: add, update, delete, mark-in-progress, mark-done",
       "failure",
       'ttc add "Buy groceries"'
     );
