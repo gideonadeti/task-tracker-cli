@@ -3,6 +3,7 @@
 import * as path from "path";
 import * as fs from "fs";
 
+// Task interface
 interface Task {
   id: number;
   description: string;
@@ -18,12 +19,16 @@ function loadTasks(): Task[] {
   if (!fs.existsSync(filePath)) {
     return [];
   }
-  const data = fs.readFileSync(filePath, "utf-8");
-  return JSON.parse(data);
+  try {
+    const data = fs.readFileSync(filePath, "utf-8");
+    return JSON.parse(data) || [];
+  } catch {
+    return [];
+  }
 }
 
 // Helper to save tasks to the JSON file
-function saveTasks(tasks: Task[]): void {
+function saveTasks(tasks: Task[]) {
   fs.writeFileSync(filePath, JSON.stringify(tasks, null, 2));
 }
 
@@ -37,7 +42,7 @@ function consoleLog(
   message: string,
   type: "success" | "failure",
   example?: string
-): void {
+) {
   const reset = "\x1b[0m";
 
   // Color codes for different log types
@@ -46,13 +51,16 @@ function consoleLog(
     failure: "\x1b[31m", // Red
   };
 
+  // Retrieve color based on the provided type
+  const color = colors[type];
+
   // Construct the message with or without example
   const fullMessage = example
     ? `${message}\nValid example: ${example}`
     : message;
 
-  // Log message with color and reset
-  console.log(`${colors[type]}${fullMessage}${reset}\n`);
+  // Log the message with color and reset
+  console.log(`${color}${fullMessage}${reset}\n`);
 }
 
 function addTask(description: string): void {
@@ -82,6 +90,19 @@ function updateTask(id: number, description: string): void {
   }
 }
 
+// Delete a task by ID
+function deleteTask(id: number): void {
+  let tasks = loadTasks();
+  const initialLength = tasks.length;
+  tasks = tasks.filter((task) => task.id !== id);
+  if (tasks.length === initialLength) {
+    consoleLog(`Task with ID ${id} not found.`, "failure");
+  } else {
+    saveTasks(tasks);
+    consoleLog(`Task with ID ${id} deleted successfully.`, "success");
+  }
+}
+
 // Main CLI handler
 const [, , command, ...args] = process.argv;
 
@@ -99,6 +120,7 @@ switch (command) {
       );
     }
     break;
+
   case "update":
     const updateId = parseInt(args[0], 10);
     if (args.length === 2 && !isNaN(updateId)) {
@@ -112,11 +134,44 @@ switch (command) {
     }
     break;
 
+  case "delete":
+    if (args.length === 1) {
+      const deleteId = parseInt(args[0], 10);
+      if (!isNaN(deleteId)) {
+        // Prompt user for confirmation
+        process.stdout.write(
+          `${"\x1b[33m"}Are you sure you want to delete the task with ID ${deleteId}? This is irreversible. (y/N): ${"\x1b[0m"}`
+        );
+        process.stdin.once("data", (input) => {
+          const response = input.toString().trim().toLowerCase();
+          if (response === "y") {
+            deleteTask(deleteId);
+          } else {
+            console.log("Task deletion cancelled.");
+          }
+          process.stdin.pause(); // Stop waiting for input after confirmation
+        });
+      } else {
+        consoleLog(
+          "Please provide a valid task ID to delete.",
+          "failure",
+          "ttc delete 1"
+        );
+      }
+    } else {
+      consoleLog(
+        "Invalid number of arguments. Please provide exactly one task ID to delete.",
+        "failure",
+        "ttc delete 1"
+      );
+    }
+    break;
+
   default:
     consoleLog(
-      "Unknown command. Available commands: add, update",
+      "Unknown command. Available commands: add, update, delete",
       "failure",
-      'ttc update 1 "Buy groceries and cook dinner"'
+      'ttc add "Buy groceries"'
     );
     break;
 }
