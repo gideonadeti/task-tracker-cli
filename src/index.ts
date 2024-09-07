@@ -60,6 +60,19 @@ function addTask(description: string): void {
   consoleLog(`Task added successfully (ID: ${newTask.id})`, "success");
 }
 
+function updateTask(id: number, description: string): void {
+  const tasks = loadTasks();
+  const task = tasks.find((t) => t.id === id);
+  if (task) {
+    task.description = description;
+    task.updatedAt = new Date().toISOString();
+    saveTasks(tasks);
+    consoleLog(`Task ${id} updated successfully.`, "success");
+  } else {
+    consoleLog(`Task with ID ${id} not found.`, "failure");
+  }
+}
+
 // Main CLI handler
 const [, , command, ...args] = process.argv;
 
@@ -72,6 +85,17 @@ switch (command) {
         args.length === 0
           ? "Please provide a description."
           : "Please provide exactly one description enclosed in quotes.",
+        "failure"
+      );
+    }
+    break;
+  case "update":
+    const updateId = parseInt(args[0], 10);
+    if (args.length === 2 && !isNaN(updateId)) {
+      updateTask(updateId, args[1]);
+    } else {
+      consoleLog(
+        "Please provide a valid task ID and new description.",
         "failure"
       );
     }
