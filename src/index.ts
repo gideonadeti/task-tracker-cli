@@ -136,7 +136,7 @@ function markTask(id: number, status: "in-progress" | "done") {
   }
 }
 
-function listTasks(status?: "in-progress" | "done") {
+function listTasks(status?: "to-do" | "in-progress" | "done") {
   const tasks = loadTasks();
   const filteredTasks = status
     ? tasks.filter((t) => t.status === status)
@@ -252,11 +252,11 @@ switch (command) {
   case "list":
     if (args.length > 0) {
       const status = args[0];
-      if (["in-progress", "done"].includes(status)) {
-        listTasks(status as "in-progress" | "done");
+      if (["to-do", "in-progress", "done"].includes(status)) {
+        listTasks(status as "to-do" | "in-progress" | "done");
       } else {
         consoleLog(
-          `Invalid status. Please provide one of the following: in-progress, or done.`,
+          `Invalid status. Please provide one of the following: to-do, in-progress, or done.`,
           "failure",
           "ttc list done"
         );
