@@ -143,7 +143,10 @@ function listTasks(status?: "to-do" | "in-progress" | "done") {
     : tasks;
 
   if (filteredTasks.length === 0) {
-    consoleLog("No tasks found.", "success");
+    consoleLog(
+      status ? `No tasks found with status "${status}".` : "No tasks found.",
+      "success"
+    );
     return;
   }
 
@@ -205,7 +208,7 @@ switch (command) {
           } else {
             console.log("Task deletion cancelled.");
           }
-          process.stdin.pause(); // Stop waiting for input after confirmation
+          process.stdin.end();
         });
       } else {
         consoleLog(
@@ -266,11 +269,36 @@ switch (command) {
     }
     break;
 
+  case "--help":
+    console.log(`
+    Usage: ttc <command> [options]
+    
+    Commands:
+      add <description>         Add a new task with the given description.
+      update <id> <description> Update the task with the specified ID.
+      delete <id>               Delete the task with the specified ID.
+      mark-in-progress <id>     Mark the task with the specified ID as "in-progress".
+      mark-done <id>            Mark the task with the specified ID as "done".
+      list [status]             List tasks. Optionally filter by status ("to-do", "in-progress", "done").
+    
+    Options:
+      --help                    Show this help message and exit.
+    
+    Examples:
+      ttc add "Buy groceries"
+      ttc update 1 "Buy groceries and cook dinner"
+      ttc delete 1
+      ttc mark-in-progress 1
+      ttc mark-done 1
+      ttc list
+      ttc list done
+    `);
+    break;
+
   default:
     consoleLog(
-      "Unknown command. Available commands: add, update, delete, mark-in-progress, mark-done",
-      "failure",
-      'ttc add "Buy groceries"'
+      "Unknown command. Type ttc --help for usage instructions.",
+      "failure"
     );
     break;
 }
