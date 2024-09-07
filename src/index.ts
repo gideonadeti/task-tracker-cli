@@ -33,7 +33,11 @@ function getNextTaskId(tasks: Task[]): number {
 }
 
 // Helper to log messages to the console
-function consoleLog(message: string, type: "success" | "failure"): void {
+function consoleLog(
+  message: string,
+  type: "success" | "failure",
+  example?: string
+): void {
   const reset = "\x1b[0m";
 
   // Color codes for different log types
@@ -42,8 +46,13 @@ function consoleLog(message: string, type: "success" | "failure"): void {
     failure: "\x1b[31m", // Red
   };
 
+  // Construct the message with or without example
+  const fullMessage = example
+    ? `${message}\nValid example: ${example}`
+    : message;
+
   // Log message with color and reset
-  console.log(`${colors[type]}${message}${reset}\n`);
+  console.log(`${colors[type]}${fullMessage}${reset}\n`);
 }
 
 function addTask(description: string): void {
@@ -85,7 +94,8 @@ switch (command) {
         args.length === 0
           ? "Please provide a description."
           : "Please provide exactly one description enclosed in quotes.",
-        "failure"
+        "failure",
+        'ttc add "Buy groceries"'
       );
     }
     break;
@@ -96,12 +106,17 @@ switch (command) {
     } else {
       consoleLog(
         "Please provide a valid task ID and new description.",
-        "failure"
+        "failure",
+        'ttc update 1 "Buy groceries and cook dinner"'
       );
     }
     break;
 
   default:
-    consoleLog("Unknown command.", "failure");
+    consoleLog(
+      "Unknown command. Available commands: add, update",
+      "failure",
+      'ttc update 1 "Buy groceries and cook dinner"'
+    );
     break;
 }
