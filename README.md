@@ -24,10 +24,10 @@ A command-line interface (CLI) tool for tracking and managing tasks. This tool a
    cd task-tracker-cli
    ```
 
-3. Install the necessary dependencies:
+3. Install the dependencies:
 
    ```bash
-   npm install
+   npm i
    ```
 
 4. Build the project (for TypeScript compilation):
